@@ -1,0 +1,161 @@
+---
+title: "How do Happy Moments Vary Across Different Demographics?"
+output:
+  html_document: default
+  pdf_document: default
+date: "2023-09-20"
+author: "Haixin Shu"
+id: "hs3372"
+---
+
+
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(echo = TRUE)
+```
+
+<style type="text/css">
+body{ /* Normal  */
+      font-size: 18px;
+      font-family: "Times New Roman", Times, serif;
+  }
+</style>
+
+## **Introduction** {.sidebar #index}
+
+Happiness is a universal aspiration, yet its manifestation varies significantly among individuals. What brings joy to one person may diverge from another's experience, shaped by unique backgrounds and personal attributes. In my endeavor to explore the dynamics of happiness, I conducted an in-depth analysis of the "HappyDB" dataset, a comprehensive repository comprising 100,000 moments of happiness generously shared by individuals representing diverse demographic profiles.<br><br>
+
+The primary objective of my report is to investigate the variances in happiness across distinct demographic groups. To accomplish this, I primarily utilize two key datasets within the collection: "cleaned_hm.csv" and "demographic.csv." Through data integration facilitated by a common identifier, the "wid" (worker ID), I have synthesized a comprehensive dataset that effectively categorizes the reasons for happiness among individuals, organized by demographic attributes such as 'age,' 'country of origin,' 'gender,' 'marital status,' and 'parenthood.'<br><br>
+
+My analytical approach is structured as follows:
+<p>
+
+* ##### [1. Sentimental Analysis](#SA)
+* ##### [2. Clustering](#C)
+* ##### [3. Topic Modeling](#TM)
+* ##### [4. Conclusion](#CON)
+
+<br>
+
+\newpage
+## **Exploratory Data Analysis**{#EPA}
+
+## **1. Sentimental Analysis**{#ssbrp}
+
+Firstly, I aim to assess the sentiment level of each happy message, which involves calculating a sentiment polarity score. Given that the data pertains to happy reasons, most of these scores are expected to be positive.
+<br><br>
+```{r echo=FALSE, out.width = "80%", fig.align = "center"}
+knitr::include_graphics("/Users/haixinshu/Desktop/Data/DS_1.png")
+```
+<div align='center'>
+<p style="font-family: times, serif; font-size:11pt; font-style:italic">
+   Figure 1 
+</p>
+</div>
+
+In order to explore the sentiment associated with happy moments across various demographic categories, I chose four key variables: age, marital status, parenthood status, and gender, and then divided each variable into groups and draw the boxplot for each group according to their sentiment score.The primary objective was to discern whether there were notable differences in sentiment scores among these groups.
+<br><br>
+
+
+```{r echo=FALSE, out.width = "80%", fig.align = "center"}
+knitr::include_graphics("/Users/haixinshu/Desktop/Data/DS_2.png")
+knitr::include_graphics("/Users/haixinshu/Desktop/Data/DS_3.png")
+knitr::include_graphics("/Users/haixinshu/Desktop/Data/DS_4.png")
+knitr::include_graphics("/Users/haixinshu/Desktop/Data/DS_5.png")
+```
+
+<div align='center'>
+<p style="font-family: times, serif; font-size:11pt; font-style:italic">
+   Figure 2
+</p>
+</div>
+
+Based on the trend observed in the box plots, it seems that individuals with significantly longer lifespans (age >= 100) tend to express more positive sentiments in their happy messages. In contrast, the positive sentiments in happy messages from individuals in other age groups exhibit statistically insignificant differences.
+<br><br>
+
+Similar to the other three factors, all of them exhibit quite similar sentiment scores. Therefore, I conclude that traditional group-based analyses do not reveal significant differences. I intend to explore alternative methods such as clustering or text analysis, which can help me delve deeper into the content of the text data and uncover patterns or themes that may not be captured through straightforward group comparisons.
+<br><br>
+
+## **2 Clustering**{#C}      
+In order to partition data points into distinct groups based on their similarity, I employed the elbow method. This method assists in selecting an appropriate number of clusters by observing how the within-cluster sum of squares (inertia) changes as we increase the number of clusters.
+<br/>
+
+```{r echo=FALSE, out.width = "80%", fig.align = "center"}
+knitr::include_graphics("/Users/haixinshu/Desktop/Data/DS_6.png")
+```
+
+<div align='center'>
+<p style="font-family: times, serif; font-size:11pt; font-style:italic">
+   Figure 3
+</p>
+</div>
+In the plot, you typically observe inertia decreasing steeply initially and then beginning to level off. The point at which it levels off represents the 'elbow,' indicating the optimal number of clusters to choose. Based on the plot, it appears that 4 clusters would be a suitable choice. Consequently, I selected 4 demographic factors (age, marital status, parenthood status, and gender) for which I created scatterplots to visualize the data distribution within each factor.
+<br/><br/>
+
+```{r echo=FALSE, out.width = "80%", fig.align = "center"}
+knitr::include_graphics("/Users/haixinshu/Desktop/Data/DS_7.png")
+```
+
+<div align='center'>
+<p style="font-family: times, serif; font-size:11pt; font-style:italic">
+   Figure 4
+</p>
+</div>
+
+However, upon visualizing the clustering of Happy Moments data using t-Distributed Stochastic Neighbor Embedding (t-SNE) for dimensionality reduction and visualization across four different demographic factors, no distinctly separated clusters emerged.
+<br/><br/>
+
+## **3. Topic Modeling**{#TM}
+The method I described only provides categorization of the texts based on emotions and assigns numerical scores to identify statistical differences. However, it doesn't reveal the exact words or phrases that drive people to feel happy or unhappy in the text.
+<br/><br/>
+Topic modeling, on the other hand, can define the specific words and themes within the text. By examining the content on a deeper level, topic modeling offers a more informative understanding compared to simply categorizing texts based on happiness scores.In order to tokenize the happy messages for further analysis, I removed stopwords, applied WordNetLemmatizer (NLTK) and split the text into individual words using Gensim's 'simple_preprocess' function. Then, I extracted the top words associated with each topic using an LDA model and get unique words and their counts. Finally, I visualized the 10 most frequently used words for each unique group within each demographic factor using a Bubble Chart.
+<br/><br/>
+
+
+```{r echo=FALSE, out.width = "49%"}
+knitr::include_graphics("/Users/haixinshu/Desktop/Data/DS_8.png")
+knitr::include_graphics("/Users/haixinshu/Desktop/Data/DS_9.png")
+```
+<div align='center'>
+<p style="font-family: times, serif; font-size:11pt; font-style:italic">
+   Figure 5
+</p>
+</div>
+
+I divided the population into more than ten groups based on their age. However, I only selected data from the '20-30' and '30-40' age groups, as the bubbles in the other groups appeared quite similar. Interestingly, I discovered that individuals in the '20-30' age group derive happiness from their friends, while those in the '30-40' age group find happiness in their work.
+<br/><br/>
+
+```{r echo=FALSE, out.width = "49%"}
+knitr::include_graphics("/Users/haixinshu/Desktop/Data/DS_10.png")
+knitr::include_graphics("/Users/haixinshu/Desktop/Data/DS_11.png")
+```
+<div align='center'>
+<p style="font-family: times, serif; font-size:11pt; font-style:italic">
+   Figure 6
+</p>
+
+Based on the bubble chart, it's evident that individuals with different parenthood statuses exhibit distinct preferences. For those who have children, family emerges as the primary source of happiness. In contrast, for those without children, friends take the top spot as the key factor contributing to their happiness, while "family" is not even among the top 10 factors influencing their happiness.
+<br/><br/>
+
+</div>
+```{r echo=FALSE, out.width = "49%"}
+knitr::include_graphics("/Users/haixinshu/Desktop/Data/DS_12.png")
+knitr::include_graphics("/Users/haixinshu/Desktop/Data/DS_13.png")
+```
+
+<div align='center'>
+<p style="font-family: times, serif; font-size:11pt; font-style:italic">
+   Figure 7
+</p>
+</div>
+
+Although we observed that the happy sentiment level is about the same for female and male, the leading factors that make they happy are very different: for female, the top two words female use in their happy message are husband and work, however, for males the top two words are family and game.
+<br/><br/>
+
+
+
+## **4. Conclusions**{#CON}
+The analysis of the HappyDataset has shed light on the complex nature of happiness across different demographic groups. In our pursuit to understand how happy moments vary among these groups, we employed various analytical methods, including sentiment analysis, clustering, and topic modeling. While sentiment levels appeared similar across demographics, topic modeling unveiled that the leading factors contributing to happiness varied significantly among demographic groups.
+<br>
+<br>
+
